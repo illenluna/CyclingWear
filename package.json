@@ -1,0 +1,21 @@
+{
+  "name": "cycling-wear",
+  "version": "1.0.0",
+  "description": "Cycling Wear — inventário visual de roupas fitness e ciclismo",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cloudinary": "^2.5.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "google-auth-library": "^9.13.0",
+    "mongoose": "^8.13.2",
+    "multer": "^1.4.5-lts.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

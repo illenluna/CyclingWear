@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#fafaf7">
+  <title>Cycling Wear</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Biblioteca oficial do Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <!-- Tela de login (exibida enquanto a sessão não está autenticada) -->
+  <div id="loginScreen" class="login-screen hidden">
+    <div class="login-card">
+      <h1 class="login-logo">Cycling Wear</h1>
+      <p class="login-sub">Inventário visual privado.<br>Entre com sua conta Google para continuar.</p>
+      <div id="googleSignInBtn" class="google-btn-wrap"></div>
+      <p id="loginError" class="login-error hidden"></p>
+    </div>
+  </div>
+
+  <!-- Casca principal do app (oculta até o login ser confirmado) -->
+  <div id="appShell" class="hidden">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="logo">Cycling Wear</h1>
+      <div class="header-actions">
+        <button id="btnAdd" class="btn btn-primary">+ Adicionar item</button>
+        <button id="btnLogout" class="btn btn-ghost" title="Sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="filters">
+      <input
+        type="search"
+        id="search"
+        placeholder="Buscar por marca, cor, notas..."
+        class="search-input"
+        autocomplete="off">
+
+      <div class="filter-row">
+        <select id="filterTipo" class="select" aria-label="Filtrar por tipo">
+          <option value="">Todos os tipos</option>
+        </select>
+        <select id="filterMarca" class="select" aria-label="Filtrar por marca">
+          <option value="">Todas as marcas</option>
+        </select>
+        <select id="filterCor" class="select" aria-label="Filtrar por cor">
+          <option value="">Todas as cores</option>
+        </select>
+      </div>
+
+      <div class="counter" id="counter">0 itens</div>
+    </section>
+
+    <section id="grid" class="grid" aria-live="polite"></section>
+
+    <div id="emptyState" class="empty-state hidden">
+      <p class="empty-title">Seu armário está vazio</p>
+      <p class="empty-sub">Clique em "+ Adicionar item" para começar.</p>
+    </div>
+  </main>
+
+  <!-- Modal: Adicionar / Editar -->
+  <div id="modalForm" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-content" role="dialog" aria-modal="true">
+      <header class="modal-header">
+        <h2 id="modalTitle">Adicionar item</h2>
+        <button class="btn-icon" data-close aria-label="Fechar">×</button>
+      </header>
+
+      <form id="itemForm" class="form" enctype="multipart/form-data">
+        <label class="field">
+          <span class="label">Foto</span>
+          <input
+            type="file"
+            id="foto"
+            name="foto"
+            accept="image/*"
+            capture="environment">
+          <div id="photoPreview" class="photo-preview hidden">
+            <img id="photoPreviewImg" alt="Pré-visualização">
+          </div>
+        </label>
+
+        <label class="field">
+          <span class="label">Tipo *</span>
+          <select id="tipo" name="tipo" required>
+            <option value="">Selecione...</option>
+            <option value="Jersey">Jersey</option>
+            <option value="Bretelle">Bretelle</option>
+            <option value="Short">Short</option>
+            <option value="Camiseta">Camiseta</option>
+            <option value="Legging">Legging</option>
+            <option value="Jaqueta">Jaqueta</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="label">Marca</span>
+          <input type="text" id="marca" name="marca" placeholder="Ex: Castelli" autocomplete="off">
+        </label>
+
+        <label class="field">
+          <span class="label">Cor</span>
+          <input type="text" id="cor" name="cor" placeholder="Ex: azul marinho" autocomplete="off">
+          <div id="colorSuggestions" class="chips" aria-label="Cores já cadastradas"></div>
+        </label>
+
+        <label class="field">
+          <span class="label">Tamanho</span>
+          <input type="text" id="tamanho" name="tamanho" placeholder="Ex: M" autocomplete="off">
+        </label>
+
+        <label class="field">
+          <span class="label">Notas</span>
+          <textarea id="notas" name="notas" rows="3" placeholder="Observações..."></textarea>
+        </label>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" data-close>Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnSave">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Detalhes -->
+  <div id="modalDetail" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close-detail></div>
+    <div class="modal-content modal-detail" role="dialog" aria-modal="true">
+      <header class="modal-header">
+        <h2 id="detailTitle">Detalhes</h2>
+        <button class="btn-icon" data-close-detail aria-label="Fechar">×</button>
+      </header>
+      <div class="detail-body">
+        <img id="detailImg" class="detail-img" alt="">
+        <dl class="detail-list">
+          <dt>Tipo</dt><dd id="detailTipo"></dd>
+          <dt>Marca</dt><dd id="detailMarca"></dd>
+          <dt>Cor</dt><dd id="detailCor"></dd>
+          <dt>Tamanho</dt><dd id="detailTamanho"></dd>
+          <dt>Notas</dt><dd id="detailNotas"></dd>
+        </dl>
+        <div class="detail-actions">
+          <button class="btn btn-ghost" id="btnEdit">Editar</button>
+          <button class="btn btn-danger" id="btnDelete">Excluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /#appShell -->
+
+  <script src="script.js"></script>
+</body>
+</html>
