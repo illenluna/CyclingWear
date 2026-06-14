@@ -676,13 +676,6 @@ body {
     order: -1;
     margin-bottom: 8px;
   }
-  .kit-preview-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-  .kit-divider {
-    display: none;
-  }
   .kit-slot {
     aspect-ratio: 1 / 1;
   }
