@@ -676,6 +676,10 @@ body {
     order: -1;
     margin-bottom: 8px;
   }
+  .kit-preview-inner {
+    max-width: 160px;
+    margin: 0 auto;
+  }
   .kit-slot {
     aspect-ratio: 1 / 1;
   }
