@@ -5,6 +5,8 @@
 let items = [];        // todos os itens vindos da API
 let editingId = null;  // id do item sendo editado (null = novo)
 let viewingId = null;  // id do item aberto em detalhes
+let kitTopId = null;   // id do item selecionado como superior no Kit Matching
+let kitBottomId = null;// id do item selecionado como inferior no Kit Matching
 
 // Tipos fixos (definidos no MVP)
 const TIPOS = ['Jersey', 'Bretelle', 'Short', 'Camiseta', 'Legging', 'Jaqueta'];
@@ -154,6 +156,7 @@ async function init() {
   populateFilters();
   render();
   bindEvents();
+  initTabs();
 }
 
 async function loadItems() {
@@ -403,6 +406,102 @@ function bindEvents() {
     if (e.key !== 'Escape') return;
     if (!modalForm.classList.contains('hidden')) closeForm();
     if (!modalDetail.classList.contains('hidden')) closeDetail();
+  });
+}
+
+// === Kit Matching ===
+const TIPOS_TOP    = ['Jersey', 'Camiseta', 'Jaqueta'];
+const TIPOS_BOTTOM = ['Bretelle', 'Short', 'Legging'];
+
+const kitSection    = document.getElementById('kitSection');
+const kitTopGrid    = document.getElementById('kitTopGrid');
+const kitBottomGrid = document.getElementById('kitBottomGrid');
+const kitPreviewTop    = document.getElementById('kitPreviewTop');
+const kitPreviewBottom = document.getElementById('kitPreviewBottom');
+const kitPreviewLabels = document.getElementById('kitPreviewLabels');
+
+function renderKit() {
+  renderKitGrid(kitTopGrid, TIPOS_TOP, 'top');
+  renderKitGrid(kitBottomGrid, TIPOS_BOTTOM, 'bottom');
+  updateKitPreview();
+}
+
+function renderKitGrid(container, tipos, slot) {
+  const filtered = items.filter(i => tipos.includes(i.tipo));
+  container.innerHTML = '';
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<p class="kit-empty">Nenhum item cadastrado</p>`;
+    return;
+  }
+
+  filtered.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'kit-card';
+    const selectedId = slot === 'top' ? kitTopId : kitBottomId;
+    if (item.id === selectedId) card.classList.add('selected');
+
+    card.innerHTML = `
+      <img src="${escapeAttr(item.foto)}" alt="${escapeHtml(item.tipo)}" loading="lazy">
+      <div class="kit-card-label">${escapeHtml(item.marca || item.tipo)}</div>
+    `;
+    card.addEventListener('click', () => {
+      if (slot === 'top') {
+        kitTopId = kitTopId === item.id ? null : item.id;
+      } else {
+        kitBottomId = kitBottomId === item.id ? null : item.id;
+      }
+      renderKit();
+    });
+    container.appendChild(card);
+  });
+}
+
+function updateKitPreview() {
+  const top    = kitTopId    ? items.find(i => i.id === kitTopId)    : null;
+  const bottom = kitBottomId ? items.find(i => i.id === kitBottomId) : null;
+
+  kitPreviewTop.innerHTML = top
+    ? `<img src="${escapeAttr(top.foto)}" alt="${escapeHtml(top.tipo)}">`
+    : `<span class="kit-slot-empty">Selecione<br>superior</span>`;
+
+  kitPreviewBottom.innerHTML = bottom
+    ? `<img src="${escapeAttr(bottom.foto)}" alt="${escapeHtml(bottom.tipo)}">`
+    : `<span class="kit-slot-empty">Selecione<br>inferior</span>`;
+
+  if (top || bottom) {
+    const parts = [];
+    if (top)    parts.push(`${top.tipo}${top.marca ? ' · ' + top.marca : ''}`);
+    if (bottom) parts.push(`${bottom.tipo}${bottom.marca ? ' · ' + bottom.marca : ''}`);
+    kitPreviewLabels.textContent = parts.join('\n');
+  } else {
+    kitPreviewLabels.textContent = '';
+  }
+}
+
+// === Navegação por abas ===
+function initTabs() {
+  const inventarioMain = document.querySelector('main.main:not(#kitSection)');
+  const tabs = document.querySelectorAll('.tab');
+  const btnAddEl = document.getElementById('btnAdd');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const target = tab.dataset.tab;
+      if (target === 'inventario') {
+        inventarioMain.classList.remove('hidden');
+        kitSection.classList.add('hidden');
+        btnAddEl.classList.remove('hidden');
+      } else {
+        inventarioMain.classList.add('hidden');
+        kitSection.classList.remove('hidden');
+        btnAddEl.classList.add('hidden');
+        renderKit();
+      }
+    });
   });
 }
 

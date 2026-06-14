@@ -25,6 +25,10 @@
   <header class="header">
     <div class="header-inner">
       <h1 class="logo">Cycling Wear</h1>
+      <nav class="tabs">
+        <button class="tab active" data-tab="inventario">Inventário</button>
+        <button class="tab" data-tab="kit">Kit Matching</button>
+      </nav>
       <div class="header-actions">
         <button id="btnAdd" class="btn btn-primary">+ Adicionar item</button>
         <button id="btnLogout" class="btn btn-ghost" title="Sair">Sair</button>
@@ -61,6 +65,41 @@
     <div id="emptyState" class="empty-state hidden">
       <p class="empty-title">Seu armário está vazio</p>
       <p class="empty-sub">Clique em "+ Adicionar item" para começar.</p>
+    </div>
+  </main>
+
+  <!-- Seção: Kit Matching -->
+  <main class="main hidden" id="kitSection">
+    <div class="kit-layout">
+
+      <!-- Coluna Superior: Jerseys -->
+      <div class="kit-col">
+        <h2 class="kit-col-title">Superior</h2>
+        <p class="kit-col-sub">Jersey · Camiseta · Jaqueta</p>
+        <div id="kitTopGrid" class="kit-grid"></div>
+      </div>
+
+      <!-- Preview combinado -->
+      <div class="kit-preview">
+        <div class="kit-preview-inner">
+          <div class="kit-slot" id="kitPreviewTop">
+            <span class="kit-slot-empty">Selecione<br>superior</span>
+          </div>
+          <div class="kit-divider"></div>
+          <div class="kit-slot" id="kitPreviewBottom">
+            <span class="kit-slot-empty">Selecione<br>inferior</span>
+          </div>
+        </div>
+        <div class="kit-preview-labels" id="kitPreviewLabels"></div>
+      </div>
+
+      <!-- Coluna Inferior: Bretelles/Shorts -->
+      <div class="kit-col">
+        <h2 class="kit-col-title">Inferior</h2>
+        <p class="kit-col-sub">Bretelle · Short · Legging</p>
+        <div id="kitBottomGrid" class="kit-grid"></div>
+      </div>
+
     </div>
   </main>
 
