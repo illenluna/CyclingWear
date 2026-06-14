@@ -157,9 +157,13 @@ app.post('/auth/google', async (req, res) => {
       return res.status(403).json({ error: 'Acesso restrito ao proprietário deste armário.' });
     }
 
-    req.session.email = email;
-    req.session.name = payload.name || '';
-    res.json({ authenticated: true, email, name: req.session.name });
+    req.session.regenerate((err) => {
+      if (err) return res.status(500).json({ error: 'Erro de sessão' });
+      req.session.email = email;
+      req.session.name = payload.name || '';
+      res.json({ authenticated: true, email, name: req.session.name });
+    });
+    return;
   } catch (err) {
     console.error('Erro ao verificar token Google:', err.message);
     res.status(401).json({ error: 'Token inválido' });
