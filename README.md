@@ -50,31 +50,47 @@ No `.env`, defina:
 
 A primeira execução cria automaticamente o arquivo `data.json` e a pasta `uploads/`.
 
-## 4. Deploy no Render (gratuito)
+## 4. Deploy na Vercel
 
-1. Faça push deste projeto para um repositório no GitHub. O `.env` **não** será enviado (está no `.gitignore`).
-2. Crie uma conta em [render.com](https://render.com) e conecte ao GitHub.
-3. Clique em **New → Web Service** e selecione o repositório.
-4. Confirme as configurações detectadas:
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
-5. Em **Environment**, adicione as três variáveis de ambiente (mesmos valores do `.env` local) mais:
-   - `NODE_ENV` = `production`
-6. Clique em **Create Web Service**.
-7. Após o primeiro deploy, copie a URL do app (ex: `https://cycling-wear.onrender.com`) e volte ao Google Cloud Console → Credenciais → seu Client ID → adicione essa URL às **Origens JavaScript autorizadas**.
+O projeto já está configurado para rodar como função serverless na Vercel (`api/index.js` + `vercel.json`), com o frontend estático servido de `public/`.
 
-> **Nota sobre o plano gratuito do Render:** o sistema de arquivos é efêmero, então fotos e dados podem ser perdidos a cada redeploy. Para uso pessoal de teste está perfeito. Para uso permanente, considere migrar fotos para Cloudinary e dados para MongoDB Atlas (ambos com plano gratuito).
+1. Faça push deste projeto para um repositório no GitHub.
+2. Em [vercel.com](https://vercel.com), importe o repositório (ou rode `npx vercel link` localmente para conectar).
+3. Configure as variáveis de ambiente do projeto (Settings → Environment Variables), para os ambientes **Production**, **Preview** e **Development**:
+   - `GOOGLE_CLIENT_ID`
+   - `ALLOWED_EMAIL`
+   - `SESSION_SECRET`
+   - `MONGODB_URI`
+   - `CLOUDINARY_CLOUD_NAME`
+   - `CLOUDINARY_API_KEY`
+   - `CLOUDINARY_API_SECRET`
+
+   Também dá para fazer isso via CLI: `npx vercel env add NOME_DA_VAR production` (repita para `preview` e `development`).
+4. Rode `npx vercel --prod` (ou faça push para a branch conectada) para publicar.
+5. Copie a URL de produção (ex: `https://cycling-wear.vercel.app`) e adicione em Google Cloud Console → Credenciais → seu Client ID → **Origens JavaScript autorizadas**.
+
+> `NODE_ENV=production` já é definido automaticamente pela Vercel em Production/Preview — não precisa configurar.
+
+Para rodar localmente simulando o ambiente da Vercel (funções serverless + rewrites): `npx vercel dev`.
+
+### Sessões
+
+Como funções serverless não mantêm estado em memória entre invocações, as sessões de login são persistidas no MongoDB (via `connect-mongo`, coleção `sessions`) em vez do `MemoryStore` padrão do Express.
 
 ## Estrutura do projeto
 
 ```
 cycling-wear/
 ├── package.json          dependências e scripts
-├── server.js             backend Node.js + Express + Google Sign-In
+├── app.js                app Express (rotas, auth, Mongo, Cloudinary)
+├── server.js             entrada local (npm start) — importa app.js
+├── api/
+│   └── index.js          função serverless da Vercel — reexporta app.js
+├── vercel.json            rewrites (API + estático)
 ├── .env.example          modelo de variáveis de ambiente
 ├── .env                  variáveis reais (não commitar)
-├── data.json             banco de dados (gerado automaticamente)
-├── uploads/              fotos dos itens (gerada automaticamente)
+├── data.json             legado (pré-migração para MongoDB)
+├── uploads/              legado (pré-migração para Cloudinary)
 └── public/
     ├── index.html        página única (login + app)
     ├── style.css         visual
