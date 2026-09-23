@@ -7,6 +7,12 @@
   <title>Cycling Wear</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Cycling Wear">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="stylesheet" href="style.css">
   <!-- Biblioteca oficial do Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -24,6 +30,9 @@
 
   <!-- Casca principal do app (oculta até o login ser confirmado) -->
   <div id="appShell" class="hidden">
+  <div id="offlineBanner" class="offline-banner hidden" role="status">
+    Sem conexão — modo somente leitura
+  </div>
   <header class="header">
     <div class="header-inner">
       <h1 class="logo">Cycling Wear</h1>
@@ -32,13 +41,13 @@
         <button class="tab" data-tab="kit">Kit Matching</button>
       </nav>
       <div class="header-actions">
-        <button id="btnAdd" class="btn btn-primary">+ Adicionar item</button>
+        <button id="btnAdd" class="btn btn-primary" data-online-only>+ Adicionar item</button>
         <button id="btnLogout" class="btn btn-ghost" title="Sair">Sair</button>
       </div>
     </div>
   </header>
 
-  <main class="main">
+  <main class="main" id="closetSection">
     <section class="filters">
       <input
         type="search"
@@ -132,12 +141,6 @@
           <span class="label">Tipo *</span>
           <select id="tipo" name="tipo" required>
             <option value="">Selecione...</option>
-            <option value="Jersey">Jersey</option>
-            <option value="Bretelle">Bretelle</option>
-            <option value="Short">Short</option>
-            <option value="Camiseta">Camiseta</option>
-            <option value="Legging">Legging</option>
-            <option value="Jaqueta">Jaqueta</option>
           </select>
         </label>
 
@@ -188,8 +191,8 @@
           <dt>Notas</dt><dd id="detailNotas"></dd>
         </dl>
         <div class="detail-actions">
-          <button class="btn btn-ghost" id="btnEdit">Editar</button>
-          <button class="btn btn-danger" id="btnDelete">Excluir</button>
+          <button class="btn btn-ghost" id="btnEdit" data-online-only>Editar</button>
+          <button class="btn btn-danger" id="btnDelete" data-online-only>Excluir</button>
         </div>
       </div>
     </div>
@@ -197,6 +200,6 @@
 
   </div><!-- /#appShell -->
 
-  <script src="script.js"></script>
+  <script type="module" src="/js/main.js"></script>
 </body>
 </html>

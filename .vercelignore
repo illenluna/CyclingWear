@@ -6,5 +6,3 @@ data.json
 *.log
 .DS_Store
 cyclingwear credentials.rtf
-migrate.js
-make_favicon.py

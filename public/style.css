@@ -33,6 +33,16 @@ body {
   line-height: 1.4;
 }
 
+/* === Aviso de modo offline === */
+.offline-banner {
+  background: var(--text);
+  color: var(--surface);
+  font-size: 0.8125rem;
+  text-align: center;
+  padding: 6px 16px;
+  padding-top: calc(6px + env(safe-area-inset-top));
+}
+
 /* === Header === */
 .header {
   background: var(--surface);

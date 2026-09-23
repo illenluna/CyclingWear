@@ -77,7 +77,7 @@ const itemSchema = new mongoose.Schema({
   criadoEm:    { type: Date,   default: Date.now }
 });
 
-// Transforma _id em id para o frontend (compatibilidade total com o script.js existente)
+// Transforma _id em id para o frontend
 itemSchema.set('toJSON', {
   virtuals: true,
   transform: (_doc, ret) => {
