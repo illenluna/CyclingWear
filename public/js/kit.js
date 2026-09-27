@@ -10,6 +10,10 @@ const kitPreviewTop    = document.getElementById('kitPreviewTop');
 const kitPreviewBottom = document.getElementById('kitPreviewBottom');
 const kitPreviewLabels = document.getElementById('kitPreviewLabels');
 
+// Subtítulos das colunas vêm dos grupos definidos em config.js
+document.getElementById('kitTopSub').textContent    = TIPOS_TOP.join(' · ');
+document.getElementById('kitBottomSub').textContent = TIPOS_BOTTOM.join(' · ');
+
 export function renderKit() {
   renderKitGrid(kitTopGrid, TIPOS_TOP, 'top');
   renderKitGrid(kitBottomGrid, TIPOS_BOTTOM, 'bottom');

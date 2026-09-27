@@ -1,10 +1,10 @@
 // Cycling Wear — constantes compartilhadas do frontend
 
 // Tipos fixos (fonte única: popula o <select> do formulário e o filtro)
-export const TIPOS = ['Jersey', 'Bretelle', 'Short', 'Camiseta', 'Legging', 'Jaqueta'];
+export const TIPOS = ['Jersey', 'Bretelle', 'Short', 'Camiseta', 'Legging', 'Jaqueta', 'Colete'];
 
 // Agrupamento usado no Kit Matching
-export const TIPOS_TOP    = ['Jersey', 'Camiseta', 'Jaqueta'];
+export const TIPOS_TOP    = ['Jersey', 'Camiseta', 'Jaqueta', 'Colete'];
 export const TIPOS_BOTTOM = ['Bretelle', 'Short', 'Legging'];
 
 // Larguras (px) pedidas ao Cloudinary por contexto — já consideram telas 2x
